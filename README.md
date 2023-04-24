@@ -1,4 +1,4 @@
-# State Machine Illustrator
+# State Machine Visualizer
 ## c_ast_xml_xslt.py
 
 ### WHAT IS IT?
@@ -32,7 +32,7 @@ Output pycparser Abstract Syntax Tree (AST) in XML:
 ) \
     | egrep -avi '^#|va_list|__attribute__' \
     | perl -pe's{__extension__}{ }g;' \
-    | c_ast_xml_xslt \
+    | python c_ast_xml_xslt.py \
     > TemplateFSM_ast.xml
 ```
 Output the result of applying gv_digraph XSLT template:
@@ -48,7 +48,7 @@ Output the result of applying gv_digraph XSLT template:
 ) \
     | egrep -avi '^#|va_list|__attribute__' \
     | perl -pe's{__extension__}{ }g;' \
-    | c_ast_xml_xslt gv_digraph.xslt \
+    | python c_ast_xml_xslt.py gv_digraph.xslt \
     | uniq \
     > gv_digraph.gv
 ```
