@@ -22,7 +22,7 @@ Assuming we want to visualize TemplateFSM.c located in:
 Output pycparser Abstract Syntax Tree (AST) in XML:
 ```
 ( 
-    cd "/mnt/c/Users/chris/OneDrive/Desktop/MPLAB_Projects/FSM_Roach.X/" \ 
+    cd "/mnt/c/Users/chris/OneDrive/Desktop/MPLAB_Projects/FSM_Roach.X/" \
     && /mnt/c/'Program Files'/Microchip/xc32/v4.10/bin/xc32-cpp.exe \
         -I'C:\Program Files/Microchip/xc32/v4.10/pic32mx/include/' \
         -I'C:\Users/chris/OneDrive/Desktop/ECE118/include' \
@@ -38,7 +38,7 @@ Output pycparser Abstract Syntax Tree (AST) in XML:
 Output the result of applying gv_digraph XSLT template:
 ```
 ( 
-    cd "/mnt/c/Users/chris/OneDrive/Desktop/MPLAB_Projects/FSM_Roach.X/" \ 
+    cd "/mnt/c/Users/chris/OneDrive/Desktop/MPLAB_Projects/FSM_Roach.X/" \
     && /mnt/c/'Program Files'/Microchip/xc32/v4.10/bin/xc32-cpp.exe \
         -I'C:\Program Files/Microchip/xc32/v4.10/pic32mx/include/' \
         -I'C:\Users/chris/OneDrive/Desktop/ECE118/include' \
