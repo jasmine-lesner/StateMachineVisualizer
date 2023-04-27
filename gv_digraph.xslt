@@ -39,6 +39,7 @@ digraph fsm {
     <xsl:text>[label = ES_INIT];
 </xsl:text>
 
+  <!-- for all = operations to nextState apply templates (BELOW) that are suitable -->
   <xsl:apply-templates select="//*[@op='=' and ./lvalue[@name='nextState'] ]"/>
 
   <xsl:text>
