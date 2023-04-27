@@ -1,8 +1,6 @@
 # State Machine Visualizer
 
-## c_ast_xml_xslt.py
-
-### WHAT IS IT?
+### c_ast_xml_xslt.py
 
 From STDIN C code is read and its AST is output to STDOUT in XML format.
 
@@ -150,6 +148,8 @@ Input must have gv_digraph.xslt supported code structure (see example below)
 * switch statements can be nested but only one level deep (see EXAMPLE below)
 * if statments can have arbirary nesting
  
+Example of supported code structure:
+
   ```
     switch (CurrentState) {
   
