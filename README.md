@@ -1,4 +1,5 @@
 # State Machine Visualizer
+
 ## c_ast_xml_xslt.py
 
 ### WHAT IS IT?
@@ -7,27 +8,9 @@ From STDIN C code is read and its AST is output to STDOUT in XML format.
 
 Arguments can specify files with XSLT to apply in the order supplied.
 
-### SETUP?
+Supplied gv_digraph.xslt creates state machine visualization. 
 
-```
-# get access to install stuff
-
-sudo bash 
-
-# install python3 and pip3
-
-apt-get update ; apt install -y python3 python3-pip python3.10-venv
-
-# create and activate python virtual environment to install necessary packages (optional)
-
-python3 -m venv smv ; . smv/bin/activate
-
-# install pycparser lxml dependency
-
-pip3 install pycparser lxml
-```
-
-### EXAMPLE?
+### USAGE
 
 Assuming we want to visualize TemplateFSM.c located in:
 ```
@@ -51,6 +34,7 @@ Output the result of applying gv_digraph XSLT template:
     | uniq \
     > gv_digraph.gv
 ```
+
 The result will be:
 ```
 # cat gv_digraph.gv
@@ -79,7 +63,7 @@ digraph fsm {
 }
 ```
 
-### SAMPLES?
+### STEPS
 
 ```
 sp=`pwd`/sample 
@@ -129,9 +113,101 @@ sf=(
 #  (smv) #
 ```
 
-### LIMITATIONS?
+### SETUP
 
-* input must have all macros and header files expanded (we use xc32-cpp.exe aka cpp for this)
-* pycparser does not support: __extension__ va_list __attribute__ 
-* input must be in a format supported by pycparser (we use grep and perl for this)
+```
+# get access to install stuff
 
+sudo bash 
+
+# install python3 and pip3
+
+apt-get update ; apt install -y python3 python3-pip python3.10-venv
+
+# create python virtual environment called smv to install necessary packages (optional)
+
+python3 -m venv smv
+
+# activate smv python virtual environment (optional)
+
+. smv/bin/activate
+
+# install pycparser lxml dependency
+
+pip3 install pycparser lxml
+```
+
+### LIMITATIONS
+
+Input code must be in a format supported by pycparser:
+* all macros and header files expanded (xc32-cpp.exe aka cpp does this)
+* pycparser does not support: __extension__ va_list __attribute__ (grep and perl remove these)
+
+Input must have gv_digraph.xslt supported code structure (see example below)
+    * top switch statement on CurrentState 
+    * EventType checked using nested switch statements or checked using if statments
+    * nextState is assigned inside these nested switch or if statements
+    * switch statements can be nested but only one level deep (see EXAMPLE below)
+    * if statments can have arbirary nesting
+ 
+  ```
+    switch (CurrentState) {
+  
+    case InitPState: 
+        if (ThisEvent.EventType == ES_INIT)
+        {
+            nextState = Hiding;
+            makeTransition = TRUE;
+            ThisEvent.EventType = ES_NO_EVENT;
+        }
+        break;
+    case Hiding: 
+        switch (ThisEvent.EventType) { // nested 
+            
+            case DARK_TO_LIGHT:
+                goForward(MOVING_SPEED);
+                nextState = Moving;
+                makeTransition = TRUE;
+                ThisEvent.EventType = ES_NO_EVENT;
+                break;
+                
+            default:
+                break;
+        }
+        break;
+    case Moving: 
+        if (ThisEvent.EventType == LIGHT_TO_DARK) 
+        {
+            stopMovement();
+            nextState = Hiding;
+            makeTransition = TRUE;
+            ThisEvent.EventType = ES_NO_EVENT;
+        } 
+        
+        if (ThisEvent.EventType == BUMPER_PRESSED)
+        {
+           if(ThisEvent.EventParam == 1)
+           {
+               previousBumpers = 1; 
+               backUpRight(TURNING_SPEED);
+                ES_Timer_InitTimer(SIMPLE_SERVICE_TIMER,TURN_TIME);
+                nextState = Getting_Unstuck;
+                makeTransition = TRUE;
+                ThisEvent.EventType = ES_NO_EVENT;    
+           } 
+           // ..
+           else if(ThisEvent.EventParam == 8)
+           {
+                turnRight(TURNING_SPEED);
+                ES_Timer_InitTimer(SIMPLE_SERVICE_TIMER,TURN_TIME);
+                nextState = Getting_Unstuck;
+                makeTransition = TRUE;
+                ThisEvent.EventType = ES_NO_EVENT;
+           }
+        }
+        break;        
+    default: // all unhandled states fall into here
+        break;
+    } // end switch on CurrentState
+
+```
