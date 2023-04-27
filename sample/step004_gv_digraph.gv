@@ -1,0 +1,26 @@
+
+digraph fsm {
+
+    // header
+    // rankdir=LR;
+    init [shape = "point", color = "black",style="filled",width=.1,forcelabels=false]; 
+
+    // states
+    InitPState;
+    Hiding;
+    Moving;
+    Getting_Unstuck;
+
+    // transitions
+    init -> InitPState[label = ES_INIT];
+    InitPState -> Hiding  [label = ES_INIT]; // switch if
+    Hiding -> Moving  [label = DARK_TO_LIGHT]; // switch switch
+    Moving -> Hiding  [label = LIGHT_TO_DARK]; // switch if
+    Moving -> Getting_Unstuck  [label = BUMPER_PRESSED]; // switch if
+    Moving -> Getting_Unstuck  [label = BUMPER_PRESSED]; // switch if
+    Moving -> Getting_Unstuck  [label = BUMPER_PRESSED]; // switch if
+    Moving -> Getting_Unstuck  [label = BUMPER_PRESSED]; // switch if
+    Getting_Unstuck -> Hiding  [label = LIGHT_TO_DARK]; // switch if
+    Getting_Unstuck -> Moving  [label = ES_TIMEOUT]; // switch if
+
+}
