@@ -144,11 +144,11 @@ Input code must be in a format supported by pycparser:
 * pycparser does not support: __extension__ va_list __attribute__ (grep and perl remove these)
 
 Input must have gv_digraph.xslt supported code structure (see example below)
-    * top switch statement on CurrentState 
-    * EventType checked using nested switch statements or checked using if statments
-    * nextState is assigned inside these nested switch or if statements
-    * switch statements can be nested but only one level deep (see EXAMPLE below)
-    * if statments can have arbirary nesting
+* top switch statement on CurrentState 
+* EventType checked using nested switch statements or checked using if statments
+* nextState is assigned inside these nested switch or if statements
+* switch statements can be nested but only one level deep (see EXAMPLE below)
+* if statments can have arbirary nesting
  
   ```
     switch (CurrentState) {
