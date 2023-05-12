@@ -189,7 +189,7 @@ sf=(
     | perl -pe's{__extension__}{ }g;' \
     | tee "${sp}/${sf[2]}" \
     | tee >( python3 c_ast_xml_xslt.py > "${sp}/${sf[3]}" ) \
-    | python3 c_ast_xml_xslt.py gv_digraph.xslt \
+    | python3 c_ast_xml_xslt.py xslt/*.xslt \
     | tee "${sp}/${sf[4]}" \
     > gv_digraph.gv
 
