@@ -61,56 +61,6 @@ digraph fsm {
 }
 ```
 
-### STEPS
-
-```
-sp=`pwd`/sample 
-
-mkdir "$sp"
-
-sf=(
-        "step000_c_code_containing_state_machine.c"
-        "step001_c_code_after_cpp.c"
-        "step002_c_code_supported_by_pycparser.c"
-        "step003_abstract_syntax_tree.xml"
-        "step004_gv_digraph.gv"
-        "step005_gv_digraph_unique.gv"
-)
-
-(
-    target=TemplateFSM.c
-    cd "/mnt/c/Users/chris/OneDrive/Desktop/MPLAB_Projects/FSM_Roach.X/" \
-    && cat $target > "${sp}/${sf[0]}" \
-    && /mnt/c/'Program Files'/Microchip/xc32/v4.10/bin/xc32-cpp.exe \
-        -I'C:\Program Files/Microchip/xc32/v4.10/pic32mx/include/' \
-        -I'C:\Users/chris/OneDrive/Desktop/ECE118/include' \
-        -I'C:\Users/chris/OneDrive/Desktop/MPLAB_Projects/FSM_Roach.X' \
-        -I'C:\Users/chris/OneDrive/Desktop/MPLAB_Projects/EventChecking.X/' \
-        $target \
-) \
-    | tee "${sp}/${sf[1]}" \
-    | egrep -avi '^#|va_list|__attribute__' \
-    | perl -pe's{__extension__}{ }g;' \
-    | tee "${sp}/${sf[2]}" \
-    | tee >( python3 c_ast_xml_xslt.py > "${sp}/${sf[3]}" ) \
-    | python3 c_ast_xml_xslt.py gv_digraph.xslt \
-    | tee "${sp}/${sf[4]}" \
-    | uniq \
-    | tee "${sp}/${sf[5]}" \
-    > gv_digraph.gv
-
-
-#  (smv) # wc -l sample/*
-#     310 sample/step000_c_code_containing_state_machine.c
-#    1294 sample/step001_c_code_after_cpp.c
-#    1137 sample/step002_c_code_supported_by_pycparser.c
-#    5873 sample/step003_abstract_syntax_tree.xml
-#      26 sample/step004_gv_digraph.gv
-#      23 sample/step005_gv_digraph_unique.gv
-#    8663 total
-#  (smv) #
-```
-
 ### SETUP
 
 ```
@@ -210,4 +160,55 @@ Example of supported code structure:
         break;
     } // end switch on CurrentState
 
+```
+
+
+### STEPS
+
+```
+sp=`pwd`/sample 
+
+mkdir "$sp"
+
+sf=(
+        "step000_c_code_containing_state_machine.c"
+        "step001_c_code_after_cpp.c"
+        "step002_c_code_supported_by_pycparser.c"
+        "step003_abstract_syntax_tree.xml"
+        "step004_gv_digraph.gv"
+        "step005_gv_digraph_unique.gv"
+)
+
+(
+    target=TemplateFSM.c
+    cd "/mnt/c/Users/chris/OneDrive/Desktop/MPLAB_Projects/FSM_Roach.X/" \
+    && cat $target > "${sp}/${sf[0]}" \
+    && /mnt/c/'Program Files'/Microchip/xc32/v4.10/bin/xc32-cpp.exe \
+        -I'C:\Program Files/Microchip/xc32/v4.10/pic32mx/include/' \
+        -I'C:\Users/chris/OneDrive/Desktop/ECE118/include' \
+        -I'C:\Users/chris/OneDrive/Desktop/MPLAB_Projects/FSM_Roach.X' \
+        -I'C:\Users/chris/OneDrive/Desktop/MPLAB_Projects/EventChecking.X/' \
+        $target \
+) \
+    | tee "${sp}/${sf[1]}" \
+    | egrep -avi '^#|va_list|__attribute__' \
+    | perl -pe's{__extension__}{ }g;' \
+    | tee "${sp}/${sf[2]}" \
+    | tee >( python3 c_ast_xml_xslt.py > "${sp}/${sf[3]}" ) \
+    | python3 c_ast_xml_xslt.py gv_digraph.xslt \
+    | tee "${sp}/${sf[4]}" \
+    | uniq \
+    | tee "${sp}/${sf[5]}" \
+    > gv_digraph.gv
+
+
+#  (smv) # wc -l sample/*
+#     310 sample/step000_c_code_containing_state_machine.c
+#    1294 sample/step001_c_code_after_cpp.c
+#    1137 sample/step002_c_code_supported_by_pycparser.c
+#    5873 sample/step003_abstract_syntax_tree.xml
+#      26 sample/step004_gv_digraph.gv
+#      23 sample/step005_gv_digraph_unique.gv
+#    8663 total
+#  (smv) #
 ```
