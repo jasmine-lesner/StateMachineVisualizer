@@ -28,36 +28,31 @@ Output the result of applying gv_digraph XSLT template:
 ) \
     | egrep -avi '^#|va_list|__attribute__' \
     | perl -pe's{__extension__}{ }g;' \
-    | python3 c_ast_xml_xslt.py gv_digraph.xslt \
-    | uniq \
+    | python3 c_ast_xml_xslt.py xslt/*.xslt \
     > gv_digraph.gv
 ```
 
 The result will be:
 ```
-# cat gv_digraph.gv
+# cat gv_digraph.gvEven
 
 digraph fsm {
-
-    // header
-    // rankdir=LR;
-    init [shape = "point", color = "black",style="filled",width=.1,forcelabels=false];
-
     // states
-    InitPState;
-    Hiding;
-    Moving;
-    Getting_Unstuck;
+    "InitPState";
+    "Hiding";
+    "Moving";
+    "Getting_Unstuck";
 
     // transitions
-    init -> InitPState[label = ES_INIT];
-    InitPState -> Hiding  [label = ES_INIT]; // switch if
-    Hiding -> Moving  [label = DARK_TO_LIGHT]; // switch switch
-    Moving -> Hiding  [label = LIGHT_TO_DARK]; // switch if
-    Moving -> Getting_Unstuck  [label = BUMPER_PRESSED]; // switch if
-    Getting_Unstuck -> Hiding  [label = LIGHT_TO_DARK]; // switch if
-    Getting_Unstuck -> Moving  [label = ES_TIMEOUT]; // switch if
-
+    "InitPState" -> "Hiding" [label = "ES_INIT" ]; // switch if
+    "Hiding" -> "Moving" [label = "DARK_TO_LIGHT" ]; // switch switch
+    "Moving" -> "Hiding" [label = "LIGHT_TO_DARK" ]; // switch if
+    "Moving" -> "Getting_Unstuck" [label = "BUMPER_PRESSED(1)" ]; // switch if
+    "Moving" -> "Getting_Unstuck" [label = "BUMPER_PRESSED(2)" ]; // switch if
+    "Moving" -> "Getting_Unstuck" [label = "BUMPER_PRESSED(4)" ]; // switch if
+    "Moving" -> "Getting_Unstuck" [label = "BUMPER_PRESSED(8)" ]; // switch if
+    "Getting_Unstuck" -> "Hiding" [label = "LIGHT_TO_DARK" ]; // switch if
+    "Getting_Unstuck" -> "Moving" [label = "ES_TIMEOUT(0)" ]; // switch if
 }
 ```
 
@@ -70,7 +65,7 @@ sudo bash
 
 # install python3 and pip3
 
-apt-get update ; apt install -y python3 python3-pip python3.10-venv
+apt-get update ; apt install -y python3 python3-pip python3.10-venv xsltproc
 
 # create python virtual environment called smv to install necessary packages (optional)
 
@@ -176,7 +171,6 @@ sf=(
         "step002_c_code_supported_by_pycparser.c"
         "step003_abstract_syntax_tree.xml"
         "step004_gv_digraph.gv"
-        "step005_gv_digraph_unique.gv"
 )
 
 (
@@ -197,18 +191,15 @@ sf=(
     | tee >( python3 c_ast_xml_xslt.py > "${sp}/${sf[3]}" ) \
     | python3 c_ast_xml_xslt.py gv_digraph.xslt \
     | tee "${sp}/${sf[4]}" \
-    | uniq \
-    | tee "${sp}/${sf[5]}" \
     > gv_digraph.gv
 
 
-#  (smv) # wc -l sample/*
-#     310 sample/step000_c_code_containing_state_machine.c
-#    1294 sample/step001_c_code_after_cpp.c
-#    1137 sample/step002_c_code_supported_by_pycparser.c
-#    5873 sample/step003_abstract_syntax_tree.xml
-#      26 sample/step004_gv_digraph.gv
-#      23 sample/step005_gv_digraph_unique.gv
-#    8663 total
-#  (smv) #
+# $ wc -l sample/*
+#   310 sample/step000_c_code_containing_state_machine.c
+#  1294 sample/step001_c_code_after_cpp.c
+#  1137 sample/step002_c_code_supported_by_pycparser.c
+#  5873 sample/step003_abstract_syntax_tree.xml
+#    25 sample/step004_gv_digraph.gv
+#  8639 total
+# $
 ```
