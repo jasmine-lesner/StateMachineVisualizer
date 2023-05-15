@@ -1,8 +1,8 @@
 # State Machine Visualizer
 
-### DEMO?
+### DEMO
 
-Here is the [latest presentation](demo/smv_0020.pdf)
+Here is the [latest presentation](demo/smv_0020.pdf).
 
 ### c_ast_xml_xslt.py
 
@@ -19,7 +19,7 @@ Assuming we want to visualize TemplateFSM.c located in:
 /mnt/c/Users/chris/OneDrive/Desktop/MPLAB_Projects/FSM_Roach.X/
 ```
 
-Output the result of applying gv_digraph XSLT template:
+To output the result of applying gv_digraph XSLT template:
 ```
 ( 
     cd "/mnt/c/Users/chris/OneDrive/Desktop/MPLAB_Projects/FSM_Roach.X/" \
