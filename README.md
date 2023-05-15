@@ -1,5 +1,9 @@
 # State Machine Visualizer
 
+### DEMO?
+
+Here is the [latest presentation](demo/smv_0020.pdf)
+
 ### c_ast_xml_xslt.py
 
 From STDIN C code is read and its AST is output to STDOUT in XML format.
