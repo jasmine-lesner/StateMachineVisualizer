@@ -15,7 +15,7 @@ set -o errexit
 set -o pipefail
 
 
-if [[ -d "$1" ]]; then
+if [[ ! -d "$1" ]]; then
     echo "Error: Supplied argument src_path must be a folder."
     exit 1
 fi
@@ -64,8 +64,8 @@ else
     echo "course_include_path does not exist: ${course_include_path}"
     echo "fetching from http://www.ufafu.com/smv/ECE118.tgz"
     ( 
-        mkidr -p "${course_include_path}"
-        cd "${course_include_path}"/..
+        mkdir -p "${course_include_path}"
+        cd "${course_include_path}"/../..
         curl -L http://www.ufafu.com/smv/ECE118.tgz \
             | tar -xzf - 
     )
@@ -78,8 +78,8 @@ else
     echo "pic32mx_include_path does not exist: ${pic32mx_include_path}"
     echo "fetching from http://www.ufafu.com/smv/pic32mx.tgz"
     ( 
-        mkidr -p "${pic32mx_include_path}"
-        cd "${pic32mx_include_path}"/..
+        mkdir -p "${pic32mx_include_path}"
+        cd "${pic32mx_include_path}"/../..
         curl -L http://www.ufafu.com/smv/pic32mx.tgz \
             | tar -xzf - 
     )
@@ -93,7 +93,8 @@ else
     echo "cloning repo from https://github.com/jlesner/smv2"
     (
         base_smv=$(basename "${smv_path}")
-        cd "${smv_path}"/..
+	dirname_smv=$(dirname "${smv_path}")
+        cd "${dirname_smv}"
         git clone https://github.com/jlesner/smv2 ${base_smv}
     )
 fi
@@ -101,10 +102,11 @@ fi
 
 (
     cd "${smv_path}"
-    docker images smv:0.05 \
+    ( docker images smv:0.05 \
             | tail -n 1 \
             | grep ^REPOSITORY \
-        || docker build -t smv:0.05 .
+	    && docker build -t smv:0.05 . 
+    ) || true
 )
 
 
