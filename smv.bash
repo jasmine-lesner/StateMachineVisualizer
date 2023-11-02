@@ -66,7 +66,7 @@ else
     ( 
         mkidr -p "${course_include_path}"
         cd "${course_include_path}"/..
-        curl -L -O http://www.ufafu.com/smv/ECE118.tgz \
+        curl -L http://www.ufafu.com/smv/ECE118.tgz \
             | tar -xzf - 
     )
 fi
@@ -80,7 +80,7 @@ else
     ( 
         mkidr -p "${pic32mx_include_path}"
         cd "${pic32mx_include_path}"/..
-        curl -L -O http://www.ufafu.com/smv/pic32mx.tgz \
+        curl -L http://www.ufafu.com/smv/pic32mx.tgz \
             | tar -xzf - 
     )
 fi
