@@ -1,0 +1,25 @@
+<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+    <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes" />
+    <!--   
+    <xsl:output method="html" encoding="UTF-8" />
+     -->
+    
+    <xsl:strip-space elements="*" />
+
+    <xsl:template match="@*|node()">
+        <xsl:copy>
+            <xsl:apply-templates select="@*|node()"/>
+        </xsl:copy>
+    </xsl:template>
+  
+    <xsl:template match="line[name(..) = 'onTransition' and matches(.,'nextState *=') ]" />
+    <xsl:template match="line[name(..) = 'onTransition' and matches(.,'makeTransition *=') ]" />
+    <xsl:template match="line[name(..) = 'onTransition' and matches(.,'ThisEvent.EventType *=') ]" />
+
+    <xsl:template match="line[name(..) = 'onTransition' and matches(.,'ES_Timer_InitTimer') ]" />
+    <!-- <xsl:template match="line[name(..) = 'onTransition' and matches(.,'if *\(') ]" /> -->
+    <!-- <xsl:template match="line[name(..) = 'onTransition' and matches(.,'\{') ]" /> -->
+    <!-- <xsl:template match="line[name(..) = 'onTransition' and matches(.,'\}') ]" /> -->
+
+</xsl:stylesheet>

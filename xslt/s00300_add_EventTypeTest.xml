@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet version="2.0"
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:set="http://exslt.org/sets"
+    xmlns:str="http://exslt.org/strings"
+    xmlns:common="http://exslt.org/common">
+
+
+    <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes" />
+    <!--   
+    <xsl:output method="html" encoding="UTF-8" />
+     -->
+    <xsl:strip-space elements="*" />
+
+
+    <xsl:template match="@*|node()">
+        <xsl:copy>
+            <xsl:apply-templates select="@*|node()"/>
+        </xsl:copy>
+    </xsl:template>
+
+    <!-- EventType Switch 
+
+        <stmts class="Switch" line="626" blockbegin="626" blockend="640">
+            <cond class="StructRef" line="626" type="." blockbegin="626" blockend="626">
+                <name class="ID" line="626" name="ThisEvent"/>
+                <field class="ID" line="626" name="EventType"/>
+            </cond>
+    
+    -->
+    <xsl:template match="
+        block_items[
+            (@class='Case' 
+                or @class='Default'
+            )
+            and ../../..
+                /*[@class='Switch']
+                /cond
+                //field[@class='ID' and @name='EventType']
+            and not(@EventTypeTest)
+        ]">
+        <xsl:copy>
+            <xsl:apply-templates select="@*"/>
+            <xsl:attribute name="EventTypeTest">
+                <xsl:value-of select="./expr[@class='ID']/@name"/>
+            </xsl:attribute>
+            <xsl:apply-templates select="node()"/>
+        </xsl:copy>
+    </xsl:template>
+
+    <!-- EventType If 
+    
+        <stmts class="If" line="618" blockbegin="618" blockend="622" EventTypeTest="ES_INIT">
+            <cond class="BinaryOp" line="618" op="==" blockbegin="618" blockend="618">
+                <left class="StructRef" line="618" type="." blockbegin="618" blockend="618">
+                    <name class="ID" line="618" name="ThisEvent"/>
+                    <field class="ID" line="618" name="EventType"/>
+                </left>
+                <right class="ID" line="618" name="ES_INIT"/>
+            </cond>
+            <iftrue class="Compound" line="619" blockbegin="619" blockend="622">
+                <block_items class="Assignment" line="620" op="=" blockbegin="620" blockend="620">
+                    <lvalue class="ID" line="620" name="nextState"/>
+                    <rvalue class="ID" line="620" name="Hiding"/>
+                </block_items>
+    
+    -->
+<!-- 
+    <xsl:template match="
+        stmts[
+            @class='If'
+            and ./cond
+                //field[
+                    @class='ID' and @name='EventType'
+                ]
+            and not(@EventTypeTest)
+        ]">
+        <xsl:copy>
+            <xsl:apply-templates select="@*"/>
+            <xsl:attribute name="EventTypeTest">
+                <xsl:for-each select=" 
+                    ./cond
+                    //*[
+                        @class='StructRef' 
+                        and ./field[
+                            @class='ID' and @name='EventType'
+                        ]
+                    ]
+                    /..
+                    /*[@class='ID' or @class='Constant']
+                ">
+                    <xsl:value-of select="@name"/>
+                    <xsl:value-of select="@value"/>
+                </xsl:for-each>
+            </xsl:attribute>
+            <xsl:apply-templates select="node()"/>
+        </xsl:copy>
+    </xsl:template> -->
+
+
+    <xsl:template match="
+        iftrue[
+            ../cond
+                //field[
+                    @class='ID' and @name='EventType'
+                ]
+            and not(@EventTypeTest)
+        ]">
+        <xsl:copy>
+            <xsl:apply-templates select="@*"/>
+            <xsl:attribute name="EventTypeTest">
+                <xsl:for-each select=" 
+                    ../cond
+                    //*[
+                        @class='StructRef' 
+                        and ./field[
+                            @class='ID' and @name='EventType'
+                        ]
+                    ]
+                    /..
+                    /*[@class='ID' or @class='Constant']
+                ">
+                    <xsl:value-of select="@name"/>
+                    <xsl:value-of select="@value"/>
+                </xsl:for-each>
+            </xsl:attribute>
+            <xsl:apply-templates select="node()"/>
+        </xsl:copy>
+    </xsl:template>
+
+</xsl:stylesheet>

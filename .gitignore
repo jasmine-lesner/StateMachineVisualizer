@@ -1,0 +1,8 @@
+*.o
+*.hex
+*.map
+*.elf
+*.png
+EnumToString.log
+.generated_files
+venv

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet version="2.0"
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:set="http://exslt.org/sets"
+    xmlns:str="http://exslt.org/strings"
+    xmlns:common="http://exslt.org/common">
+
+    <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes" />
+    <!--   
+    <xsl:output method="html" encoding="UTF-8" />
+     -->
+    <xsl:strip-space elements="*" />
+
+    <xsl:key name="line-key" match="/root/code/line" use="@n" />
+
+    <xsl:template match="@*|node()">
+        <xsl:copy>
+            <xsl:apply-templates select="@*|node()"/>
+        </xsl:copy>
+    </xsl:template>
+
+    <xsl:template match="*[
+        @NextStateLabel
+        and not(guard)
+        and not(../..[guard])
+    ]">
+        <xsl:copy>
+            <xsl:apply-templates select="@*"/>
+
+            <xsl:variable name="nextStateContext" select="ancestor::*[@EventTypeTest or @EventParamTest][1]"/>
+            <xsl:variable name="bLine" select="$nextStateContext/@bLine"/>
+            <xsl:variable name="eLine" select="$nextStateContext/@eLine"/>
+
+            <xsl:element name="onTransition">
+                <xsl:variable name="currentNode" select="." />
+                <xsl:for-each select="$bLine to $eLine">
+                    <xsl:variable name="n" select="string(.)" />
+                        <xsl:for-each select="$currentNode[not($n = $bLine) and not($n = $eLine)]">
+                            <xsl:copy-of select="key('line-key', $n)" />
+                        </xsl:for-each>
+                </xsl:for-each>
+            </xsl:element>
+
+            <xsl:apply-templates select="node()"/>
+        </xsl:copy>
+    </xsl:template> 
+
+    <xsl:template match="*[
+        @NextStateLabel 
+        and not(guard)
+        and ../..[guard] 
+    ]">
+        <xsl:copy>
+            <xsl:apply-templates select="@*"/>
+            <xsl:variable name="guardStateContext" select=".."/>
+            <xsl:variable name="bLine" select="$guardStateContext/@bLine"/>
+            <xsl:variable name="eLine" select="$guardStateContext/@eLine"/>
+            
+            <xsl:element name="onTransition">
+                <xsl:variable name="currentNode" select="." />
+                <xsl:for-each select="$bLine to $eLine">
+                    <xsl:variable name="n" select="string(.)" />
+                        <xsl:for-each select="$currentNode[not($n = $bLine)]">
+                            <xsl:copy-of select="key('line-key', $n)" />
+                        </xsl:for-each>
+                </xsl:for-each>
+            </xsl:element>
+
+            <xsl:apply-templates select="node()"/>
+        </xsl:copy>
+    </xsl:template>
+
+    <xsl:template match="*[
+        @NextStateLabel 
+        and guard
+    ]">
+        <xsl:copy>
+            <xsl:apply-templates select="@*"/>
+            <xsl:variable name="guardStateContext" select=".."/>
+            <xsl:variable name="bLine" select="$guardStateContext/@bLine"/>
+            <xsl:variable name="eLine" select="./@bLine"/>
+
+            <xsl:element name="onTransition">
+                <xsl:variable name="currentNode" select="." />
+                <xsl:for-each select="$bLine to $eLine">
+                    <xsl:variable name="n" select="string(.)" />
+                        <xsl:for-each select="$currentNode[not($n = $bLine) and not($n = $eLine)]">
+                            <xsl:copy-of select="key('line-key', $n)" />
+                        </xsl:for-each>
+                </xsl:for-each>
+            </xsl:element>
+
+            <xsl:apply-templates select="node()"/>
+        </xsl:copy>
+    </xsl:template>
+
+
+</xsl:stylesheet>
+ 

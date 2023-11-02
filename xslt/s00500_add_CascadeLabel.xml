@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+Label case cascades such as for FRONT_LEFT_BUMPER_PRESSED below:
+
+          //Handle front bumpers
+        case FRONT_LEFT_BUMPER_PRESSED:
+        case FRONT_RIGHT_BUMPER_PRESSED:
+            nextState = Reversing;
+            makeTransition = TRUE;
+            ThisEvent.EventType = ES_NO_EVENT;
+            break;
+
+  ** INPUT and OUTPUT samples are supplied at the end of this file.**
+
+-->
+<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+
+    <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes" />
+    <!--   
+    <xsl:output method="html" encoding="UTF-8" />
+     -->
+    <xsl:strip-space elements="*" />
+
+  <xsl:template
+    match="
+      block_items[
+        @class='Case'
+        and not(@CascadeLabel)
+      ]
+    ">
+    <xsl:copy>
+      <xsl:apply-templates select="@*" />
+      <xsl:attribute name="CascadeLabel">
+        <xsl:value-of select="expr[@class='ID']/@name" />
+        <xsl:for-each select="CascadeElement">
+            <xsl:text> or </xsl:text>
+            <xsl:value-of select="@name" />
+        </xsl:for-each>
+      </xsl:attribute>       
+      <xsl:apply-templates select="node()" />
+    </xsl:copy>
+  </xsl:template>
+
+  <!-- identity transform - copy all input nodes to output -->
+  <xsl:template match="@*|node()">
+    <xsl:copy>
+      <xsl:apply-templates select="@*|node()" />
+    </xsl:copy>
+  </xsl:template>
+
+</xsl:stylesheet>
+
+<!--
+
+Sample FSM C code INPUT:
+
+      case Driving:
+        switch (ThisEvent.EventType) {
+... 
+        //Handle front bumpers
+        case FRONT_LEFT_BUMPER_PRESSED:
+        case FRONT_RIGHT_BUMPER_PRESSED:
+            nextState = Reversing;
+            makeTransition = TRUE;
+            ThisEvent.EventType = ES_NO_EVENT;
+            break;
+...
+
+
+Sample Abstract Syntax Tree INPUT
+
+                <block_items class="Case">
+                  <expr class="ID" name="REAR_LEFT_BUMPER_PRESSED"/>
+                </block_items>
+                <block_items class="Case">
+                  <expr class="ID" name="REAR_RIGHT_BUMPER_PRESSED"/>
+                  <stmts class="Assignment" op="=">
+                    <lvalue class="ID" name="nextState"/>
+                    <rvalue class="ID" name="Driving"/>
+                  </stmts>
+                  <stmts class="Assignment" op="=">
+                    <lvalue class="ID" name="makeTransition"/>
+                    <rvalue class="ID" name="TRUE"/>
+                  </stmts>
+                  <stmts class="Assignment" op="=">
+                    <lvalue class="StructRef" type=".">
+                      <name class="ID" name="ThisEvent"/>
+                      <field class="ID" name="EventType"/>
+                    </lvalue>
+                    <rvalue class="ID" name="ES_NO_EVENT"/>
+                  </stmts>
+                  <stmts class="Break"/>
+                </block_items>
+  
+Sample Abstract Syntax Tree OUTPUT
+
+                <block_items class="Case" CascadeLabel="REAR_LEFT_BUMPER_PRESSED" >
+                  <expr class="ID" name="REAR_LEFT_BUMPER_PRESSED"/>
+                </block_items>
+                <block_items class="Case" CascadeLabel="REAR_LEFT_BUMPER_PRESSED or REAR_RIGHT_BUMPER_PRESSED">
+                  <expr class="ID" name="REAR_RIGHT_BUMPER_PRESSED"/>
+                  <stmts class="Assignment" op="=">
+                    <lvalue class="ID" name="nextState"/>
+                    <rvalue class="ID" name="Driving"/>
+                  </stmts>
+                  <stmts class="Assignment" op="=">
+                    <lvalue class="ID" name="makeTransition"/>
+                    <rvalue class="ID" name="TRUE"/>
+                  </stmts>
+                  <stmts class="Assignment" op="=">
+                    <lvalue class="StructRef" type=".">
+                      <name class="ID" name="ThisEvent"/>
+                      <field class="ID" name="EventType"/>
+                    </lvalue>
+                    <rvalue class="ID" name="ES_NO_EVENT"/>
+                  </stmts>
+                  <stmts class="Break"/>
+                </block_items>
+
+-->

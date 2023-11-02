@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+  Generate graphviz digraph (see LIMITATIONS below)
+
+-->
+<xsl:stylesheet version="2.0"
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+    <xsl:output method="text"/>
+
+    <xsl:template match="/">
+
+        <xsl:variable name="InitState" select="//ext[@class='Decl'and @name='CurrentState']/init/@name"/>
+        <xsl:text>
+digraph fsm {
+
+    // header
+    // rankdir=LR;
+    </xsl:text>
+    <xsl:value-of select="$InitState"/>
+    <xsl:text>[shape = "point", color = "black",style="filled",width=.1,forcelabels=false];
+
+    // states
+    node [shape=plaintext]
+    </xsl:text>
+        <xsl:for-each select="
+            //*[
+                @CurrentStateTest
+                    and not(@CurrentStateTest = '')
+                    and not(@CurrentStateTest = $InitState)
+                    and not(guard)
+                ]">
+
+            <xsl:text>
+    </xsl:text>
+            <xsl:value-of select="@CurrentStateTest"/>
+<xsl:text><![CDATA[ [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" style="rounded">
+        <TR>
+            <TD BORDER="1" SIDES="B">]]></xsl:text>
+
+            <xsl:value-of select="@CurrentStateTest"/>
+
+            <xsl:text><![CDATA[</TD>
+        </TR>]]></xsl:text>
+        <xsl:if test="stmts[@class='Assignment' and rvalue/args/exprs/@name='ThisEvent']/lvalue[@name='ThisEvent']">
+            <xsl:text><![CDATA[
+        <TR>
+            <TD ALIGN="LEFT">⬇️ ]]></xsl:text>
+        <xsl:value-of select="stmts[@class='Assignment']/rvalue/name/@name"/>
+        <xsl:text><![CDATA[</TD>
+        </TR>
+            ]]></xsl:text>
+        </xsl:if>
+        <xsl:text><![CDATA[
+        <TR>
+            <TD ALIGN="LEFT"><B>/Entry: </B></TD>
+        </TR>]]></xsl:text>
+
+            <xsl:for-each select="onEntry/line">
+                <xsl:text><![CDATA[
+        <TR><TD ALIGN="LEFT">]]></xsl:text>
+                <!-- <xsl:value-of select="normalize-space(.)"/> -->
+                <xsl:value-of select="."/>
+                <xsl:text><![CDATA[</TD></TR>]]></xsl:text>
+            </xsl:for-each>
+
+            <xsl:text><![CDATA[
+        <TR>
+            <TD ALIGN="LEFT"><B>/Exit: </B></TD>
+        </TR>
+        ]]></xsl:text>
+
+            <xsl:for-each select="onExit/line">
+                <xsl:text><![CDATA[<TR><TD ALIGN="LEFT">]]></xsl:text>
+                <!-- <xsl:value-of select="normalize-space(.)"/> -->
+                <xsl:value-of select="."/>
+                <xsl:text><![CDATA[</TD></TR>
+        ]]></xsl:text>
+            </xsl:for-each>
+
+            <xsl:text><![CDATA[</TABLE>>];
+
+
+]]></xsl:text>
+        </xsl:for-each>
+
+    <xsl:text>
+
+    // guards
+</xsl:text>
+
+    <xsl:for-each select="
+            //*[
+                @CurrentStateTest
+                    and not(@CurrentStateTest = '')
+                    and not(@CurrentStateTest = 'InitPSubState')
+                    and guard
+                ]">
+
+            <xsl:text>
+    </xsl:text>
+            <xsl:value-of select="@CurrentStateTest"/>
+<xsl:text><![CDATA[ [shape=point, xlabel="]]></xsl:text>
+
+            <xsl:for-each select="guard/line">
+                <!-- <xsl:value-of select="normalize-space(.)"/> -->
+                <xsl:value-of select="."/>
+                <xsl:text>
+</xsl:text>
+            </xsl:for-each>
+
+            <xsl:text><![CDATA["];
+]]></xsl:text>
+    
+        </xsl:for-each>
+
+        <xsl:text>
+
+    // transitions
+</xsl:text>
+
+    <xsl:for-each select="//*[ @NextStateLabel ]">
+        <xsl:value-of select="ancestor::*[@CurrentStateTest][1]/@CurrentStateTest"/>
+        <xsl:text> -> </xsl:text>
+        <xsl:value-of select="@NextStateLabel"/>
+        <xsl:text><![CDATA[[label=<<TABLE BORDER="0" CELLBORDER="0">
+		<TR><TD BORDER="1" SIDES="B">]]></xsl:text>
+        <xsl:value-of select="@EventLabel"/>
+        <xsl:text><![CDATA[</TD></TR>]]></xsl:text>
+
+        <xsl:for-each select="onTransition/line">
+            <xsl:text><![CDATA[
+            <TR><TD ALIGN="LEFT">]]></xsl:text>
+            <!-- <xsl:value-of select="normalize-space(.)"/> -->
+            <xsl:value-of select="."/>
+            <xsl:text><![CDATA[</TD></TR>]]></xsl:text>
+        </xsl:for-each>
+
+        <xsl:text><![CDATA[
+		</TABLE>>];
+
+
+]]></xsl:text>
+
+    </xsl:for-each>
+
+        <xsl:text>
+}</xsl:text>
+    </xsl:template>
+
+</xsl:stylesheet>

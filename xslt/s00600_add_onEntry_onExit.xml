@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet version="2.0"
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    >
+
+    <!-- xmlns:set="http://exslt.org/sets"
+    xmlns:str="http://exslt.org/strings"
+    xmlns:common="http://exslt.org/common" -->
+    
+    <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes" />
+    <!--   
+    <xsl:output method="html" encoding="UTF-8" />
+     -->
+    <xsl:strip-space elements="*" />
+    
+    <xsl:key name="line-key" match="/root/code/line" use="@n" />
+
+    <xsl:template match="@*|node()">
+        <xsl:copy>
+            <xsl:apply-templates select="@*|node()"/>
+        </xsl:copy>
+    </xsl:template>
+    
+    <xsl:template match="*[@CurrentStateTest and not(guard)]">
+        <xsl:copy>
+            <xsl:apply-templates select="@*"/>
+        
+            <xsl:variable name="bLine1" select=".//*[@EventTypeTest='ES_ENTRY']/@bLine"/>
+            <xsl:variable name="eLine1" select=".//*[@EventTypeTest='ES_ENTRY']/@eLine"/>
+
+            <xsl:element name="onEntry">
+                <xsl:variable name="currentNode" select="." />
+                <xsl:for-each select="$bLine1 to $eLine1">
+                    <xsl:variable name="n" select="string(.)" />
+                    <xsl:for-each select="$currentNode[not($n = $bLine1) and not($n = $eLine1)]">
+                        <!-- <xsl:copy-of select="/root/code/line[@n = $n]"/> -->
+                        <xsl:copy-of select="key('line-key', $n)" />
+                    </xsl:for-each>        
+                </xsl:for-each>
+            </xsl:element>
+        
+            <xsl:variable name="bLine2" select=".//*[@EventTypeTest='ES_EXIT']/@bLine"/>
+            <xsl:variable name="eLine2" select=".//*[@EventTypeTest='ES_EXIT']/@eLine"/>    
+
+            <xsl:element name="onExit">
+                <xsl:variable name="currentNode" select="." />
+                <xsl:for-each select="$bLine2 to $eLine2">
+                    <xsl:variable name="n" select="string(.)" />
+                    <xsl:for-each select="$currentNode[not($n = $bLine2) and not($n = $eLine2)]">
+                        <!-- <xsl:copy-of select="/root/code/line[@n = $n]"/> -->
+                        <xsl:copy-of select="key('line-key', $n)" />
+                    </xsl:for-each>        
+                </xsl:for-each>
+            </xsl:element>
+
+            <xsl:apply-templates select="node()"/>
+        </xsl:copy>
+    </xsl:template> 
+
+</xsl:stylesheet>
+ 

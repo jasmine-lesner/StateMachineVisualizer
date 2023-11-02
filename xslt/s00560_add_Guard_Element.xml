@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet version="2.0"
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:set="http://exslt.org/sets"
+    xmlns:str="http://exslt.org/strings"
+    xmlns:common="http://exslt.org/common">
+
+
+    <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes" />
+    <!--   
+    <xsl:output method="html" encoding="UTF-8" />
+     -->
+    <xsl:strip-space elements="*" />
+
+    <xsl:key name="line-key" match="/root/code/line" use="@n" />
+
+    <xsl:template match="@*|node()">
+        <xsl:copy>
+            <xsl:apply-templates select="@*|node()"/>
+        </xsl:copy>
+    </xsl:template>
+
+
+    <xsl:template match="
+        *[
+            @class='If'
+            and not(
+                    (cond[@class='BinaryOp']/left[name/@name='ThisEvent' and field/@name='EventType'] )
+                    or (cond[@class='BinaryOp']/left[name/@name='ThisEvent' and field/@name='EventParam'] )
+                )
+            and (
+                    iftrue/block_items[@NextStateLabel]
+                    or iffalse/block_items[@NextStateLabel]
+            ) 
+        ]">
+        <xsl:copy>
+            <xsl:apply-templates select="@*"/>
+                
+            <xsl:variable name="bLine" select="cond/@bLine"/>
+            <xsl:variable name="eLine" select="cond/@eLine"/>
+
+            <xsl:element name="guard">
+                <xsl:variable name="currentNode" select="." />
+                <xsl:for-each select="$bLine to $eLine">
+                    <xsl:variable name="n" select="string(.)" />
+                    <xsl:for-each select="$currentNode">
+                        <!-- <xsl:copy-of select="/root/code/line[@n = $n]"/> -->
+                        <xsl:copy-of select="key('line-key', $n)" />
+                    </xsl:for-each>        
+                </xsl:for-each>
+            </xsl:element>
+            
+            <xsl:apply-templates select="node()"/>
+        </xsl:copy>
+    </xsl:template>
+
+</xsl:stylesheet>
+

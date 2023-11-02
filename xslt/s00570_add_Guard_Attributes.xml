@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet version="2.0"
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:set="http://exslt.org/sets"
+    xmlns:str="http://exslt.org/strings"
+    xmlns:common="http://exslt.org/common">
+
+
+    <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes" />
+    <!--   
+    <xsl:output method="html" encoding="UTF-8" />
+     -->
+    <xsl:strip-space elements="*" />
+
+    <xsl:template match="@*|node()">
+        <xsl:copy>
+            <xsl:apply-templates select="@*|node()"/>
+        </xsl:copy>
+    </xsl:template>
+
+    <xsl:template match="
+        *[
+            @class='If'
+            and guard
+        ]">
+        <xsl:copy>
+            <xsl:apply-templates select="@*"/>
+            <xsl:attribute name='CurrentStateTest'>
+                <xsl:value-of select="guard/line[1]/@n"/>
+            </xsl:attribute>
+            <xsl:attribute name='NextStateLabel'>
+                <xsl:value-of select="guard/line[1]/@n"/>
+            </xsl:attribute>
+            <xsl:attribute name='EventLabel'>
+                <xsl:choose>
+                    <xsl:when test="..[name()='iftrue']/..[guard]">
+                        <xsl:text>TRUE</xsl:text>
+                    </xsl:when>
+                    <xsl:when test="..[name()='iffalse']/..[guard]">
+                        <xsl:text>FALSE</xsl:text>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:value-of select="(.//@EventLabel)[1]"/>
+                    </xsl:otherwise>
+                </xsl:choose>
+            </xsl:attribute>
+            <xsl:apply-templates select="node()"/>
+        </xsl:copy>
+    </xsl:template>
+
+    <xsl:template match="
+        *[
+            @NextStateLabel
+            and not(guard)
+        ]
+    ">
+        <xsl:copy>
+            <xsl:apply-templates select="@*[not(name()='EventLabel')]"/>
+            <xsl:attribute name='EventLabel'>
+                <xsl:choose>
+                    <xsl:when test="..[name()='iftrue']/..[guard]">
+                        <xsl:text>TRUE</xsl:text>
+                    </xsl:when>
+                    <xsl:when test="..[name()='iffalse']/..[guard]">
+                        <xsl:text>FALSE</xsl:text>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:value-of select="@EventLabel"/>
+                    </xsl:otherwise>
+                </xsl:choose>
+            </xsl:attribute>
+            <xsl:apply-templates select="node()"/>
+        </xsl:copy>
+    </xsl:template>
+
+</xsl:stylesheet>
+

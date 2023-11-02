@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet version="2.0"
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:set="http://exslt.org/sets"
+    xmlns:str="http://exslt.org/strings"
+    xmlns:common="http://exslt.org/common">
+
+    <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes" />
+    <!--   
+    <xsl:output method="html" encoding="UTF-8" />
+     -->
+    <xsl:strip-space elements="*" />
+
+    <xsl:template match="@*|node()">
+        <xsl:copy>
+            <xsl:apply-templates select="@*|node()"/>
+        </xsl:copy>
+    </xsl:template>
+    
+    <!-- EventParam Switch
+    
+    
+     -->
+    <xsl:template match="
+        block_items[
+            (@class='Case' 
+                or @class='Default'
+            )
+            and ../../..
+                /*[@class='Switch']
+                /cond
+                //field[@class='ID' and @name='EventParam']
+            and not(@EventParamTest)
+        ]">
+        <xsl:copy>
+            <xsl:apply-templates select="@*"/>
+            <xsl:attribute name="EventParamTest">
+                <xsl:value-of select="./expr[@class='ID']/@name"/>
+            </xsl:attribute>
+            <xsl:apply-templates select="node()"/>
+        </xsl:copy>
+    </xsl:template>
+
+    <!-- EventParam If
+    
+        <stmts class="If" line="696" blockbegin="696" blockend="717" EventParamTest="">
+            <cond class="BinaryOp" line="696" op="==" blockbegin="696" blockend="696">
+            <left class="StructRef" line="696" type="." blockbegin="696" blockend="696">
+                <name class="ID" line="696" name="ThisEvent"/>
+                <field class="ID" line="696" name="EventParam"/>
+            </left>
+            <right class="Constant" line="696" type="int" value="1"/>
+            </cond>
+    
+     -->
+    <!-- <xsl:template match="
+        *[
+            @class='If'
+            and ./cond
+                //field[
+                    @class='ID' and @name='EventParam'
+                ]
+            and not(@EventParamTest)
+        ]">
+        <xsl:copy>
+            <xsl:apply-templates select="@*"/>
+            <xsl:attribute name="EventParamTest">
+                <xsl:for-each select=" 
+                    ./cond
+                    //*[
+                        @class='StructRef' 
+                        and ./field[
+                            @class='ID' and @name='EventParam'
+                        ]
+                    ]
+                    /..
+                    /*[@class='ID' or @class='Constant']
+                ">
+                    <xsl:value-of select="@name"/>
+                    <xsl:value-of select="@value"/>
+                </xsl:for-each>
+            </xsl:attribute>
+            <xsl:apply-templates select="node()"/>
+        </xsl:copy>
+    </xsl:template> -->
+
+    <xsl:template match="
+        iftrue[
+            ../cond
+                //field[
+                    @class='ID' and @name='EventParam'
+                ]
+            and not(@EventParamTest)
+        ]">
+        <xsl:copy>
+            <xsl:apply-templates select="@*"/>
+            <xsl:attribute name="EventParamTest">
+                <xsl:for-each select=" 
+                    ../cond
+                    //*[
+                        @class='StructRef' 
+                        and ./field[
+                            @class='ID' and @name='EventParam'
+                        ]
+                    ]
+                    /..
+                    /*[@class='ID' or @class='Constant']
+                ">
+                    <xsl:value-of select="@name"/>
+                    <xsl:value-of select="@value"/>
+                </xsl:for-each>
+            </xsl:attribute>
+            <xsl:apply-templates select="node()"/>
+        </xsl:copy>
+    </xsl:template>
+
+</xsl:stylesheet>
+
+
+<!-- 
+<iffalse class="If" line="705" bLine="705" eLine="717" EventParamTest="2">
+    <cond class="BinaryOp" line="705" op="==" bLine="705" eLine="705">
+        <left class="StructRef" line="705" type="." bLine="705" eLine="705">
+            <name class="ID" line="705" name="ThisEvent"></name>
+            <field class="ID" line="705" name="EventParam"></field>
+        </left>
+        <right class="Constant" line="705" type="int" value="2"></right>
+    </cond>
+    <iftrue class="Compound" line="706" bLine="706" eLine="712">
+        <block_items class="Assignment" line="707" op="=" bLine="707" eLine="707">
+            <lvalue class="ID" line="707" name="previousBumpers"></lvalue>
+            <rvalue class="Constant" line="707" type="int" value="2"></rvalue>
+        </block_items>
+        <block_items class="FuncCall" line="708" bLine="708" eLine="708">
+            <name class="ID" line="708" name="backUpLeft"></name>
+            <args class="ExprList" line="708" bLine="708" eLine="708">
+                <exprs class="Constant" line="708" type="int" value="90"></exprs>
+            </args>
+        </block_items>
+        <block_items class="FuncCall" line="709" bLine="709" eLine="709">
+            <name class="ID" line="709" name="ES_Timer_InitTimer"></name>
+            <args class="ExprList" line="709" bLine="709" eLine="709">
+                <exprs class="Constant" line="709" type="int" value="0"></exprs>
+                <exprs class="Constant" line="709" type="int" value="3000"></exprs>
+            </args>
+        </block_items>
+        <block_items class="Assignment" line="710" op="=" bLine="710" eLine="710" NextStateLabel="Getting_Unstuck" EventLabel="(FRONT_RIGHT_BUMPER_PRESSED or FRONT_LEFT_BUMPER_PRESSED)(2)">
+            <lvalue class="ID" line="710" name="nextState"></lvalue>
+            <rvalue class="ID" line="710" name="Getting_Unstuck"></rvalue>
+        </block_items>
+        <block_items class="Assignment" line="711" op="=" bLine="711" eLine="711">
+            <lvalue class="ID" line="711" name="makeTransition"></lvalue>
+            <rvalue class="ID" line="711" name="TRUE"></rvalue>
+        </block_items>
+        <block_items class="Assignment" line="712" op="=" bLine="712" eLine="712">
+            <lvalue class="StructRef" line="712" type="." bLine="712" eLine="712">
+                <name class="ID" line="712" name="ThisEvent"></name>
+                <field class="ID" line="712" name="EventType"></field>
+            </lvalue>
+            <rvalue class="ID" line="712" name="ES_NO_EVENT"></rvalue>
+        </block_items>
+    </iftrue>
+    <iffalse class="Compound" line="714" bLine="714" eLine="717">
+        <block_items class="Assignment" line="715" op="=" bLine="715" eLine="715" NextStateLabel="Reversing" 
+            EventLabel="(FRONT_RIGHT_BUMPER_PRESSED or FRONT_LEFT_BUMPER_PRESSED)(2)">
+            <lvalue class="ID" line="715" name="nextState"></lvalue>
+            <rvalue class="ID" line="715" name="Reversing"></rvalue>
+        </block_items>
+        <block_items class="Assignment" line="716" op="=" bLine="716" eLine="716">
+            <lvalue class="ID" line="716" name="makeTransition"></lvalue>
+            <rvalue class="ID" line="716" name="TRUE"></rvalue>
+        </block_items> -->

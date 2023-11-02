@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+
+    TODO CurrentState If 
+
+
+-->
+<xsl:stylesheet version="2.0"
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:set="http://exslt.org/sets"
+    xmlns:str="http://exslt.org/strings"
+    xmlns:common="http://exslt.org/common">
+
+
+    <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes" />
+    <!--   
+    <xsl:output method="html" encoding="UTF-8" />
+     -->
+    <xsl:strip-space elements="*" />
+
+
+    <xsl:template match="@*|node()">
+        <xsl:copy>
+            <xsl:apply-templates select="@*|node()"/>
+        </xsl:copy>
+    </xsl:template>
+    
+    <!-- CurrentState Switch
+
+        <block_items class="Switch" line="616" blockbegin="616" blockend="736">
+            <cond class="ID" line="616" name="CurrentState"/>
+            <stmt class="Compound" line="616" blockbegin="616" blockend="736">
+                <block_items class="Case" line="617" blockbegin="617" blockend="624"
+                            CurrentStateTest="InitPSubState">
+                    <expr class="ID" line="617" name="InitPSubState"/>
+    
+     -->
+    <xsl:template match="
+        block_items[
+            (@class='Case' 
+                or @class='Default')
+            and (
+                ../../..
+                /block_items[@class='Switch']
+                /cond[@class='ID' and @name='CurrentState']
+            )
+            and not(@CurrentStateTest)
+        ]">
+        <xsl:copy>
+            <xsl:apply-templates select="@*"/>
+            <xsl:attribute name="CurrentStateTest">
+                <xsl:value-of select="./expr[@class='ID']/@name"/>
+            </xsl:attribute>
+            <xsl:apply-templates select="node()"/>
+        </xsl:copy>
+    </xsl:template>
+
+
+</xsl:stylesheet>
