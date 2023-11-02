@@ -22,28 +22,28 @@ fi
 
 export src_path=`cd "${1}" ; pwd`
 
-apt-get --version >/dev/null \
+( apt-get --version 2>&1 ) >/dev/null \
     || ( \
         echo "Error: apt-get package manager missing; please use debian or ubuntu to run me."
         exit 1
     )
 
 
-curl --version >/dev/null \
+( curl --version 2>&1 ) >/dev/null \
     || ( \
         sudo apt-get update \
             && sudo apt install -y curl
     )
 
 
-git --version >/dev/null \
+( git --version 2>&1 ) >/dev/null \
     || ( \
     sudo apt-get update \
         && sudo apt install -y git
     )
 
 
-docker --version >/dev/null \
+( docker --version 2>&1 ) >/dev/null \
     || ( \
         sudo apt-get update \
             && sudo apt-get install -y podman podman-docker
@@ -128,3 +128,10 @@ docker run \
             && export course_include_path=${course_include_path} \
             && bash ./smv_gen_png.bash \
         "
+
+echo "
+NOTE: To uninstall smv, the following three commands may (or may not) be useful:
+    docker rmi smv:0.05
+    sudo apt remove podman podman-docker # first check you no longer need this 
+    rm -rf ${smv_path} ${dep_path} # first check these were actually used for your installation!
+"
