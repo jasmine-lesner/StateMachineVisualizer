@@ -1,9 +1,5 @@
 # State Machine Visualizer
 
-### DEMO
-
-Here is the [latest presentation](demo/smv_0020.pdf).
-
 ### c_ast_xml_xslt.py
 
 From STDIN C code is read and its AST is output to STDOUT in XML format.
@@ -19,7 +15,7 @@ Assuming we want to visualize TemplateFSM.c located in:
 /mnt/c/Users/chris/OneDrive/Desktop/MPLAB_Projects/FSM_Roach.X/
 ```
 
-To output the result of applying gv_digraph XSLT template:
+Output the result of applying gv_digraph XSLT template:
 ```
 ( 
     cd "/mnt/c/Users/chris/OneDrive/Desktop/MPLAB_Projects/FSM_Roach.X/" \
@@ -32,32 +28,86 @@ To output the result of applying gv_digraph XSLT template:
 ) \
     | egrep -avi '^#|va_list|__attribute__' \
     | perl -pe's{__extension__}{ }g;' \
-    | python3 c_ast_xml_xslt.py xslt/*.xslt \
+    | python3 c_ast_xml_xslt.py gv_digraph.xslt \
+    | uniq \
     > gv_digraph.gv
 ```
 
 The result will be:
 ```
-# cat gv_digraph.gvEven
+# cat gv_digraph.gv
 
 digraph fsm {
+
+    // header
+    // rankdir=LR;
+    init [shape = "point", color = "black",style="filled",width=.1,forcelabels=false];
+
     // states
-    "InitPState";
-    "Hiding";
-    "Moving";
-    "Getting_Unstuck";
+    InitPState;
+    Hiding;
+    Moving;
+    Getting_Unstuck;
 
     // transitions
-    "InitPState" -> "Hiding" [label = "ES_INIT" ]; // switch if
-    "Hiding" -> "Moving" [label = "DARK_TO_LIGHT" ]; // switch switch
-    "Moving" -> "Hiding" [label = "LIGHT_TO_DARK" ]; // switch if
-    "Moving" -> "Getting_Unstuck" [label = "BUMPER_PRESSED(1)" ]; // switch if
-    "Moving" -> "Getting_Unstuck" [label = "BUMPER_PRESSED(2)" ]; // switch if
-    "Moving" -> "Getting_Unstuck" [label = "BUMPER_PRESSED(4)" ]; // switch if
-    "Moving" -> "Getting_Unstuck" [label = "BUMPER_PRESSED(8)" ]; // switch if
-    "Getting_Unstuck" -> "Hiding" [label = "LIGHT_TO_DARK" ]; // switch if
-    "Getting_Unstuck" -> "Moving" [label = "ES_TIMEOUT(0)" ]; // switch if
+    init -> InitPState[label = ES_INIT];
+    InitPState -> Hiding  [label = ES_INIT]; // switch if
+    Hiding -> Moving  [label = DARK_TO_LIGHT]; // switch switch
+    Moving -> Hiding  [label = LIGHT_TO_DARK]; // switch if
+    Moving -> Getting_Unstuck  [label = BUMPER_PRESSED]; // switch if
+    Getting_Unstuck -> Hiding  [label = LIGHT_TO_DARK]; // switch if
+    Getting_Unstuck -> Moving  [label = ES_TIMEOUT]; // switch if
+
 }
+```
+
+### STEPS
+
+```
+sp=`pwd`/sample 
+
+mkdir "$sp"
+
+sf=(
+        "step000_c_code_containing_state_machine.c"
+        "step001_c_code_after_cpp.c"
+        "step002_c_code_supported_by_pycparser.c"
+        "step003_abstract_syntax_tree.xml"
+        "step004_gv_digraph.gv"
+        "step005_gv_digraph_unique.gv"
+)
+
+(
+    target=TemplateFSM.c
+    cd "/mnt/c/Users/chris/OneDrive/Desktop/MPLAB_Projects/FSM_Roach.X/" \
+    && cat $target > "${sp}/${sf[0]}" \
+    && '/mnt/c/Program Files/Microchip/xc32/v4.10/bin/xc32-cpp.exe' \
+        -I'C:\Program Files/Microchip/xc32/v4.10/pic32mx/include/' \
+        -I'C:\Users/chris/OneDrive/Desktop/ECE118/include' \
+        -I'C:\Users/chris/OneDrive/Desktop/MPLAB_Projects/FSM_Roach.X' \
+        -I'C:\Users/chris/OneDrive/Desktop/MPLAB_Projects/EventChecking.X/' \
+        $target \
+) \
+    | tee "${sp}/${sf[1]}" \
+    | egrep -avi '^#|va_list|__attribute__' \
+    | perl -pe's{__extension__}{ }g;' \
+    | tee "${sp}/${sf[2]}" \
+    | tee >( python3 c_ast_xml_xslt.py > "${sp}/${sf[3]}" ) \
+    | python3 c_ast_xml_xslt.py gv_digraph.xslt \
+    | tee "${sp}/${sf[4]}" \
+    | uniq \
+    | tee "${sp}/${sf[5]}" \
+    > gv_digraph.gv
+
+
+#  (smv) # wc -l sample/*
+#     310 sample/step000_c_code_containing_state_machine.c
+#    1294 sample/step001_c_code_after_cpp.c
+#    1137 sample/step002_c_code_supported_by_pycparser.c
+#    5873 sample/step003_abstract_syntax_tree.xml
+#      26 sample/step004_gv_digraph.gv
+#      23 sample/step005_gv_digraph_unique.gv
+#  (smv) #
 ```
 
 ### SETUP
@@ -69,7 +119,7 @@ sudo bash
 
 # install python3 and pip3
 
-apt-get update ; apt install -y python3 python3-pip python3.10-venv xsltproc
+apt-get update ; apt install -y python3 python3-pip python3.10-venv
 
 # create python virtual environment called smv to install necessary packages (optional)
 
@@ -159,51 +209,4 @@ Example of supported code structure:
         break;
     } // end switch on CurrentState
 
-```
-
-
-### STEPS
-
-```
-sp=`pwd`/sample 
-
-mkdir "$sp"
-
-sf=(
-        "step000_c_code_containing_state_machine.c"
-        "step001_c_code_after_cpp.c"
-        "step002_c_code_supported_by_pycparser.c"
-        "step003_abstract_syntax_tree.xml"
-        "step004_gv_digraph.gv"
-)
-
-(
-    target=TemplateFSM.c
-    cd "/mnt/c/Users/chris/OneDrive/Desktop/MPLAB_Projects/FSM_Roach.X/" \
-    && cat $target > "${sp}/${sf[0]}" \
-    && /mnt/c/'Program Files'/Microchip/xc32/v4.10/bin/xc32-cpp.exe \
-        -I'C:\Program Files/Microchip/xc32/v4.10/pic32mx/include/' \
-        -I'C:\Users/chris/OneDrive/Desktop/ECE118/include' \
-        -I'C:\Users/chris/OneDrive/Desktop/MPLAB_Projects/FSM_Roach.X' \
-        -I'C:\Users/chris/OneDrive/Desktop/MPLAB_Projects/EventChecking.X/' \
-        $target \
-) \
-    | tee "${sp}/${sf[1]}" \
-    | egrep -avi '^#|va_list|__attribute__' \
-    | perl -pe's{__extension__}{ }g;' \
-    | tee "${sp}/${sf[2]}" \
-    | tee >( python3 c_ast_xml_xslt.py > "${sp}/${sf[3]}" ) \
-    | python3 c_ast_xml_xslt.py xslt/*.xslt \
-    | tee "${sp}/${sf[4]}" \
-    > gv_digraph.gv
-
-
-# $ wc -l sample/*
-#   310 sample/step000_c_code_containing_state_machine.c
-#  1294 sample/step001_c_code_after_cpp.c
-#  1137 sample/step002_c_code_supported_by_pycparser.c
-#  5873 sample/step003_abstract_syntax_tree.xml
-#    25 sample/step004_gv_digraph.gv
-#  8639 total
-# $
 ```
