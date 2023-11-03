@@ -13,7 +13,7 @@ STEP 2:
 
 Inspect smv.bash so you understand the changes it will make to your computer. Notice for example it will install git, curl and podman if these tools are missing.
 
-If necessary to install these things smv.bash runs "sudo apt-get" which may ask for your password.
+If necessary to install these things smv.bash runs ```sudo apt-get``` which may ask for your password.
 
 When run for the first time smv.bash will checkout the latest state machine visualizer (aka smv) project and fetch and install dependencies. 
 
