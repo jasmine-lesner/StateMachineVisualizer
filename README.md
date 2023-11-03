@@ -36,6 +36,3 @@ Inspect the generated *.gv and *.png files:
 ```
 find ${path_to_code} -name '*.cp5*'
 ```
-
-When run for the first time smv.bash will checkout the latest smv project and fetch and install all dependencies.
-Instructions how to remove the things that smv.bash installs are output when smv.bash ends.
