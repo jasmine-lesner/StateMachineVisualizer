@@ -115,7 +115,7 @@ docker run \
     --rm \
     -it \
     -v ${smv_path}:${smv_path} \
-    -v ${src_path}:${src_path} \
+    -v "${src_path}":"${src_path}" \
     -v ${pic32mx_include_path}:${pic32mx_include_path} \
     -v ${course_include_path}:${course_include_path} \
     smv:0.05 \
@@ -123,7 +123,7 @@ docker run \
         " \
         cd ${smv_path} \
             && export smv_path=${smv_path} \
-            && export src_path=${src_path} \
+            && export src_path="${src_path}" \
             && export pic32mx_include_path=${pic32mx_include_path} \
             && export course_include_path=${course_include_path} \
             && bash ./smv_gen_png.bash \
