@@ -55,13 +55,6 @@ ilist=`find "$src_path" \
         echo "-I${d}"
     done `
 
-# echo "find \"$src_path\" \
-#     -type f \
-#     -name 'ES_Configure.h' \
-#     | while read d ; do
-#             echo \"\$(dirname \$d)\"
-#         done \
-#     | head -n 1 || true"
 
 # next command has pipefail?
 iconfig=`find "$src_path" \
