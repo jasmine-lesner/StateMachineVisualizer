@@ -131,7 +131,7 @@ docker run \
 
 echo "
 NOTE: To uninstall smv, the following three commands may (or may not) be useful:
-    docker rmi smv:0.05
+    docker rmi smv:0.05 ubuntu:20.04
     sudo apt remove podman podman-docker # first check you no longer need this 
     rm -rf ${smv_path} ${dep_path} # first check these were actually used for your installation!
 "
