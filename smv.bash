@@ -4,7 +4,9 @@
 # set -o xtrace
 # export SHELLOPTS
 
-if [[ -z "$1" ]]; then
+arg="$1"
+
+if [[ -z "$arg" ]]; then
     echo "Error: You must supply src_path as an argument."
     exit 1
 fi
@@ -15,12 +17,18 @@ set -o errexit
 set -o pipefail
 
 
-if [[ ! -d "$1" ]]; then
+if [[ "$arg" == *:* ]]; then
+  unix_path="$(echo ${arg} | tr "\n" "\0" | xargs -0 wslpath -u )"
+else
+  unix_path="$arg"
+fi
+
+if [[ ! -d "$unix_path" ]]; then
     echo "Error: Supplied argument src_path must be a folder."
     exit 1
 fi
 
-export src_path=`cd "${1}" ; pwd`
+export src_path=`cd "${unix_path}" ; pwd`
 
 ( apt-get --version 2>&1 ) >/dev/null \
     || ( \
@@ -110,22 +118,22 @@ fi
 )
 
 
+    # --name smv_01 \
 docker run \
-    --name smv_01 \
     --rm \
     -it \
-    -v ${smv_path}:${smv_path} \
-    -v ${src_path}:${src_path} \
-    -v ${pic32mx_include_path}:${pic32mx_include_path} \
-    -v ${course_include_path}:${course_include_path} \
+    -v "${smv_path}":"${smv_path}" \
+    -v "${src_path}":"${src_path}" \
+    -v "${pic32mx_include_path}":"${pic32mx_include_path}" \
+    -v "${course_include_path}":"${course_include_path}" \
     smv:0.05 \
     bash -c \
         " \
-        cd ${smv_path} \
-            && export smv_path=${smv_path} \
-            && export src_path=${src_path} \
-            && export pic32mx_include_path=${pic32mx_include_path} \
-            && export course_include_path=${course_include_path} \
+        cd '${smv_path}' \
+            && export smv_path='${smv_path}' \
+            && export src_path='${src_path}' \
+            && export pic32mx_include_path='${pic32mx_include_path}' \
+            && export course_include_path='${course_include_path}' \
             && bash ./smv_gen_png.bash \
         "
 
@@ -133,5 +141,5 @@ echo "
 NOTE: To uninstall smv, the following three commands may (or may not) be useful:
     docker rmi smv:0.05 ubuntu:20.04
     sudo apt remove podman podman-docker # first check you no longer need this 
-    rm -rf ${smv_path} ${dep_path} # first check these were actually used for your installation!
+    rm -rf '${smv_path}' '${dep_path}' # first check these were actually used for your installation!
 "
