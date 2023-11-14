@@ -45,7 +45,7 @@ digraph fsm {
         <xsl:if test="stmts[@class='Assignment' and rvalue/args/exprs/@name='ThisEvent']/lvalue[@name='ThisEvent']">
             <xsl:text><![CDATA[
         <TR>
-            <TD ALIGN="LEFT">⬇️ ]]></xsl:text>
+            <TD ALIGN="LEFT">▶️ ]]></xsl:text>
         <xsl:value-of select="stmts[@class='Assignment']/rvalue/name/@name"/>
         <xsl:text><![CDATA[</TD>
         </TR>
