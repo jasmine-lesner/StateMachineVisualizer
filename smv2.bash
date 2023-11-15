@@ -76,12 +76,12 @@ if [[ -d "${smv_path}" ]]; then
     echo "smv_path exists: ${smv_path}"
 else
     echo "smv_path does not exist: ${smv_path}"
-    echo "cloning repo from https://git.ucsc.edu/asl-ucsc/classes/automatedstatediagrams.git"
+    echo "cloning repo from git@git.ucsc.edu:asl-ucsc/classes/automatedstatediagrams.git"
     (
         base_smv=$(basename "${smv_path}")
 	    dirname_smv=$(dirname "${smv_path}")
         cd "${dirname_smv}"
-        git clone https://git.ucsc.edu/asl-ucsc/classes/automatedstatediagrams.git ${base_smv}
+        git clone git@git.ucsc.edu:asl-ucsc/classes/automatedstatediagrams.git ${base_smv}
     )
 fi
 
