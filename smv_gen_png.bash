@@ -110,8 +110,9 @@
                         s{zz0912819zz}{}g;
                     ' \
                     | dos2unix \
-                    > "${ff}.cp5" \
-                && rm -f "${ff}.undef"
+                    > "${ff}.cp5"
+                    # \
+                # && rm -f "${ff}.undef"
                     # -I'$iconfig' \
             ) 2>&1 
             # | tee "${f}.log"
