@@ -2,20 +2,20 @@
 
 # **Environment Variables**
 #
-# Environment variables are used to specify folders used:
+# Environment variables specify folders this script uses:
 #     `src_path` is for the top folder containing the source files to be visualized 
-#     `smv_path` is the home of the state machine visualizer tool, 
-#     `pic32mx_include_path` for Microchip PIC32MX include files, 
+#     `smv_path` is the home of the state machine visualizer tool
+#     `pic32mx_include_path` for Microchip PIC32MX include files
 #     `course_include_path` for course-specific include files
 #
-# Example how to run this script:
+# Example how to launch this script:
 #
 # (
 #     cd ${smv_path}
-#     && export src_path= # visualize state machine *.c files inside this folder or children 
+#     && export src_path= # path to state machine *.c files (inside this folder or children)
 #     && export smv_path= # path to your local copy of state machine visualizer aka smv repo
-#     && export pic32mx_include_path= # points to pic32mx include files ( eg Microchip/xc32/v4.10/pic32mx/include ) 
-#     && export course_include_path= # points to course include files ( eg ECE118 )
+#     && export pic32mx_include_path= # path to pic32mx include files ( eg Microchip/xc32/v4.10/pic32mx/include ) 
+#     && export course_include_path= # path to course include files ( eg ECE118 )
 #     && bash ./smv_gen_png.bash
 # )
 
@@ -93,7 +93,8 @@ find \
 #
 # 6. **Perl Regular Expression Processing**:
 #     - Two Perl (`perl -pe`) commands are used to perform regular expression substitutions on the extracted lines:
-#         - The first `perl` command encodes certain patterns found after `#define` directives. It is targeting macro names and replacing parts of them with a unique string (`zz0912819zz`), marked with a comment `# encode123` for later identification.
+#         - The first `perl` command encodes certain patterns found after `#define` directives. 
+#           It is targeting macro names and replacing parts of them with a unique string (`zz0912819zz`), marked with a comment `# encode123` for later identification.
 #         - The second `perl` command removes the `# encode123` marker, leaving only the modified macro names.
 #
 # 7. **Filtering and Deduplicating (`grep`, `sort`, `uniq`)**:
@@ -159,7 +160,6 @@ iconfig2=$( \
         | xargs -0 -I{} echo "-I'{}'" \
         | tr "\n" " " \
     )
-
 
 # Step-by-step: 
 #
@@ -262,7 +262,6 @@ rm -f "$epath" # encode.pl script has served its purpose and is no longer needed
 #
 
 
-
 # **Apply PycParser and XSLT and GraphViz**
 #
 # We locate `*.c.cp5` files in `src_path` (generated above) and build their abstract syntax tree AST using PycParser, 
@@ -348,7 +347,6 @@ find "$src_path" -name '*.c.cp5' \
 #
 # 8. **Error Handling and Logging**:
 #    - The `2>&1` notation combines standard output and error streams, which can be used for logging or debugging (as indicated by the commented out `| tee "${f}.log"`).
-
 
 
 # **Cleanup Intermedite Files**
