@@ -95,7 +95,7 @@
                     | perl -p "${epath}" \
                     | ( egrep -avi '^#define '  || true ) \
                     > "${ff}.undef" \
-                && echo "cpp \
+                && echo "( cd '$b' ; cpp \
                     -I\"${course_include_path}\" \
                     -I\"${pic32mx_include_path}\" \
                     $ilist \
@@ -103,7 +103,8 @@
                     -I'${b}' \
                     -I. \
                     '${ff}.undef' \
-                    " \
+                    )" \
+                    | tee /dev/stderr \
                     | bash \
                     | perl -pe '
                         s{zz0912819zz}{}g;
