@@ -1,4 +1,5 @@
 # State Machine Visualizer
+![Research Poster](48x36_smv_poster_010.png)
 
 ### USAGE
 
