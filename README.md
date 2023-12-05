@@ -1,3 +1,5 @@
+![Research Poster](48x36_smv_poster_010.png)
+
 # State Machine Visualizer Setup and Usage Guide
 
 ## Overview
