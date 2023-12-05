@@ -1,39 +1,42 @@
-# State Machine Visualizer
-![Research Poster](48x36_smv_poster_010.png)
+# State Machine Visualizer Setup and Usage Guide
 
-### USAGE
+## Overview
+The State Machine Visualizer (SMV) is a tool for visualizing the structure and behavior of state machines in your code. Follow these steps to set up and use the tool.
 
-STEP 1: 
+### Step-by-Step Instructions
 
-Fetch smv.bash script:
+#### STEP 1: Download the Script
+First, download the `smv.bash` script using the following command:
 ```
 wget https://raw.githubusercontent.com/jlesner/smv2/main/smv.bash 
 ```
 
-STEP 2:
+#### STEP 2: Script Review and Preparation
 
-Inspect smv.bash so you understand the changes it will make to your computer. Notice for example it will install git, curl and podman if these tools are missing.
+Before running the script, it's important to understand its functions:
 
-If necessary to install these things smv.bash runs ```sudo apt-get``` which may ask for your password.
+- **Inspect Changes:** Review the `smv.bash` script to understand the changes it will make. It installs necessary tools like git, curl, and podman if they are not already present on your system.
 
-When run for the first time smv.bash will checkout the latest state machine visualizer (aka smv) project and fetch and install dependencies. 
+- **Password Prompt:** The script uses `sudo apt-get`, which might prompt you for your password to install missing tools.
 
-The script requires Linux with apt package manager (like Ubuntu) so on Windows you may want to install Ubuntu/WSL2 or that in VM if using MACOS.
+- **First-Time Setup:** On its initial run, `smv.bash` will download the latest version of the State Machine Visualizer and install required dependencies.
 
-To isolate itself from the local environment smv.bash builds a Linux container and installs remaining dependencies (python, java, etc) and runs smv code inside that container. This container takes about 900mb. 
+- **System Requirements:** The script is designed for Linux systems with the apt package manager, such as Ubuntu. Windows users can use Ubuntu/WSL2, and macOS users might need to run Ubuntu in a VM.
 
-Instructions to remove the things that smv.bash installs are output when smv.bash ends. If you leave these installed the script runs faster next time.
+- **Containerization:** To create a suitable environment, `smv.bash` builds a Linux container, installing additional dependencies (Python, Java, etc.) and executes the SMV code within this container. Note that this container requires approximately 900MB of space.
 
-STEP 3: 
+- **Cleanup:** At the end of the script, instructions are provided to remove the installations made by `smv.bash`. These intructions are for when you are done using SMV and want to remove it. Leaving things installed allows  `smv.bash` to run faster. 
 
-Run smv.bash with path to your state machine files:
+#### STEP 3: Running the Script
+To run the State Machine Visualizer, use the following command, replacing `${path_to_code}` with the path to your state machine files:
 ```
 bash smv.bash ${path_to_code}
 ```
 
-STEP 4: 
-
-Inspect the generated *.gv and *.png files:
+#### STEP 4: Viewing the Results
+After running the script, you can find the generated `.gv` and `.png` files, which are the visual representations of your state machines, using this command:
 ```
 find ${path_to_code} -name '*.cp5*'
 ```
+
+By following these steps, you should be able to successfully set up and use the State Machine Visualizer for your projects.
