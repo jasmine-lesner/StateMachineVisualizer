@@ -44,4 +44,3 @@ After running the script, you can find the generated `.gv` and `.png` files, whi
 find ${path_to_code} -name '*.cp5*'
 ```
 
-By following these steps, you should be able to successfully set up and use the State Machine Visualizer for your projects.
