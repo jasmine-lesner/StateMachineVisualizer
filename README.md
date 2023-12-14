@@ -1,7 +1,7 @@
-# Project Writeup => [PDF](https://github.com/jlesner/smv2/blob/main/smv_ieee_035.pdf) 
+# WRITEUP => [PDF](https://github.com/jlesner/smv2/blob/main/smv_ieee_035.pdf) 
 ![Research Writeup](smv_ieee_035.png)
 
-# Project Poster
+# POSTER
 ![Research Poster](48x36_smv_poster_010.png)
 
 # State Machine Visualizer Setup and Usage Guide
