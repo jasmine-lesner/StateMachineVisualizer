@@ -1,5 +1,5 @@
 # WRITEUP => [PDF](https://github.com/jlesner/smv2/blob/main/smv_ieee_035.pdf) 
-![Research Writeup](smv_ieee_035.png)
+[![Research Writeup](smv_ieee_035.png)](https://github.com/jlesner/smv2/blob/main/smv_ieee_035.pdf)
 
 # POSTER
 ![Research Poster](48x36_smv_poster_010.png)
