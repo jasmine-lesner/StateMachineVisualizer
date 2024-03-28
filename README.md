@@ -11,7 +11,7 @@ The State Machine Visualizer (SMV) is a tool for visualizing the structure and b
 
 ### Step-by-Step Instructions
 
-**System Requirements:** These instructions are for Linux systems with the apt package manager, such as Ubuntu. [Windows users can use Ubuntu/WSL2](https://learn.microsoft.com/en-us/windows/wsl/install), and macOS users might need to run Ubuntu in a VM.
+**System Requirements:** These instructions are for Linux systems with the apt package manager, such as Ubuntu. [Windows users can use Ubuntu/WSL2](https://learn.microsoft.com/en-us/windows/wsl/install), and [macOS users can run Ubuntu in a VM](https://developer.apple.com/documentation/virtualization/creating_and_running_a_linux_virtual_machine).
 
 #### STEP 1: Download the Script
 First, download the `smv.bash` script using the following command:
