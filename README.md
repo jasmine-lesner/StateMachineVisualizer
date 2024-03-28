@@ -11,6 +11,8 @@ The State Machine Visualizer (SMV) is a tool for visualizing the structure and b
 
 ### Step-by-Step Instructions
 
+**System Requirements:** These instructions are for Linux systems with the apt package manager, such as Ubuntu. [Windows users can use Ubuntu/WSL2](https://learn.microsoft.com/en-us/windows/wsl/install), and macOS users might need to run Ubuntu in a VM.
+
 #### STEP 1: Download the Script
 First, download the `smv.bash` script using the following command:
 ```
@@ -26,8 +28,6 @@ Before running the script, it's important to understand its functions:
 - **Password Prompt:** The script uses `sudo apt-get`, which might prompt you for your password to install missing tools.
 
 - **First-Time Setup:** On its initial run, `smv.bash` will download the latest version of the State Machine Visualizer and install required dependencies.
-
-- **System Requirements:** The script is designed for Linux systems with the apt package manager, such as Ubuntu. Windows users can use Ubuntu/WSL2, and macOS users might need to run Ubuntu in a VM.
 
 - **Containerization:** To create a suitable environment, `smv.bash` builds a Linux container, installing additional dependencies (Python, Java, etc.) and executes the SMV code within this container. Note that this container requires approximately 900MB of space.
 
