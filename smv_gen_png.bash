@@ -302,6 +302,8 @@ find "$src_path" -name '*.c.cp5' \
                 > "${f}.gv"
 
             dot -Tpng "${f}.gv" -o "${f}.png"
+            dot -Tpdf "${f}.gv" -o "${f}.pdf"
+            # dot -Tsvg "${f}.gv" -o "${f}.svg"
 
         ) 2>&1 
         # | tee "${f}.log"

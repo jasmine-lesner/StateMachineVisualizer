@@ -1,5 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+
+This template is designed to process XML output from PycParser,
+the primary purpose being to normalize the format of the ASTs in XML.
+This normalization process makes the AST XML structure cleaner and more
+consistent, which is particularly helpful in understanding and visualizing
+the changes brought about by subsequent XSLT transformations. The
+template does this by stripping away any unnecessary white space
+and ensuring that all elements and attributes are copied as they are,
+without any alteration. By setting the output to be XML with indentation,
+it further enhances readability, making it easier for users to see the
+structure and content of the original XML data. This step is essential
+for those who need to clearly understand the transformations applied in
+later stages of processing.
+
+-->
+
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" >
+
+
 
     <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes" />
     <!--   
