@@ -103,8 +103,8 @@ digraph fsm {
 <xsl:text><![CDATA[ [shape=point, xlabel="]]></xsl:text>
 
             <xsl:for-each select="guard/line">
-                <!-- <xsl:value-of select="normalize-space(.)"/> -->
-                <xsl:value-of select="."/>
+                <xsl:value-of select="normalize-space(.)"/>
+                <!-- <xsl:value-of select="."/> -->
                 <xsl:text>
 </xsl:text>
             </xsl:for-each>

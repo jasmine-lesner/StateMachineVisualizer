@@ -13,7 +13,7 @@
   </xsl:template>
 
   <!-- Add "endline" attribute to each node with the maximum "line" value of its children -->
-  <xsl:template match="*[@line and @line!='None' and .//*[@line] ]">
+  <xsl:template match="*[@line and @line!='None' and (name()='cond' or .//*[@line]) ]">
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
       <xsl:attribute name="bLine">
