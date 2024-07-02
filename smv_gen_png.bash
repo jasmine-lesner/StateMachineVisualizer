@@ -202,6 +202,9 @@ find "$src_path" -type f -name '*.c' -print0 \
                 | ( egrep -avi '^#define '  || true ) \
                 > "${ff}.undef" \
             && echo "( cd '$b' ; cpp \
+	        -D__32MXGENERIC__ \
+	        -D__LANGUAGE_C__ \
+		-D__MIPSEL__ \
                 -I\"${course_include_path}\" \
                 -I\"${pic32mx_include_path}\" \
                 $ilist \
@@ -273,8 +276,11 @@ find "$src_path" -name '*.c.cp5' \
         (
             cat "$f" \
                 | tr -d '\r' \
-                | ( egrep -avi '^[[:blank:]]*$|^#|va_list|__attribute__' || true ) \
-                | perl -pe's{__extension__}{ }g; s{__}{}g; ' \
+                | ( egrep -avi '^[[:blank:]]*$|^#|va_list' || true ) \
+                | perl -0pe's{\b(extern)\b.*?;}{;}gs' \
+                | perl -pe's{__extension__}{ }g; s{__}{}g;' \
+                | perl -0pe's{\b(extern|wur|nonnull|THROW|__attribute__)\b.*?;}{;}gs' \
+                | tee "${f}.4ast" \
                 | python3 c_ast_xml.py \
                 | tee "${f}.xml" \
                 | saxonb-xslt -s:/dev/stdin -o:/dev/stdout -xsl:xslt/s00005_identity.xml \
@@ -356,7 +362,7 @@ find "$src_path" -name '*.c.cp5' \
 # Find all files within `src_path` that end with `.c.cp5` or `.c.cp5.xml`, and then safely and forcefully delete them. 
 # The use of null characters as delimiters in `xargs` makes this command robust against file names with unusual characters or spaces.
 
-find "$src_path" | egrep '\.c\.cp5$|\.c\.cp5\.xml$'  | tr "\n" "\0" | xargs -0 rm -f
+find "$src_path" | egrep '\.c\.cp5$|\.c\.cp5\.xml$|\.c\.cp5\.4ast$'  | tr "\n" "\0" | xargs -0 rm -f
 
 # Step-by-step:
 #
