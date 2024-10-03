@@ -1,8 +1,11 @@
-# WRITEUP => [PDF](https://github.com/jlesner/smv2/blob/main/smv_ieee_035.pdf) 
-[![Research Writeup](smv_ieee_035.png)](https://github.com/jlesner/smv2/blob/main/smv_ieee_035.pdf)
+# OVERVIEW => [VIDEO](https://youtu.be/IHp0X0J5Di8) 
+[![Overview Video](doc/smv_video.png)](https://youtu.be/IHp0X0J5Di8)
 
-# POSTER
-![Research Poster](48x36_smv_poster_010.png)
+# REPORT => [PDF](https://github.com/jlesner/smv2/blob/main/doc/smv_ieee_035.pdf) 
+[![Technical Report](doc/smv_ieee_035.png)](https://github.com/jlesner/smv2/blob/main/doc/smv_ieee_035.pdf)
+
+# POSTER => [PDF](doc/48x36_smv_poster_010.pdf)
+[![Research Poster](doc/48x36_smv_poster_010.png)](https://github.com/jlesner/smv2/blob/main/doc/48x36_smv_poster_010.pdf)
 
 # State Machine Visualizer Setup and Usage Guide
 
